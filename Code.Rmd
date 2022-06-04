@@ -1,0 +1,184 @@
+---
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+
+```{r}
+cpd <- cpd
+## Policy and risk
+
+## Simple linear regression model
+
+m1.risk <- lm(policy ~ risk, data=cpd)
+
+## Multiple linear regression model
+
+m2.risk <- lm(policy ~ risk + hdi + ghg + gdp, data=cpd)
+
+## Graph
+
+#orange
+m1.risk.eq <- function(x){
+  coef(m1.risk)[2]*x + coef(m1.risk)[1]
+}
+
+#blue
+
+m2.risk.eq <- function(x){
+  coef(m2.risk)[2]*x + coef(m2.risk)[1] + coef(m2.risk)[3] + coef(m2.risk)[4] + coef(m2.risk)[5]
+}
+
+graph1 <- ggplot(cpd,aes(y=policy,x=risk)) +
+  geom_point() +
+  stat_function(fun=m1.risk.eq,geom="line",color=scales::hue_pal()(2)[1])+
+  stat_function(fun=m2.risk.eq,geom="line",color=scales::hue_pal()(2)[2])+
+  geom_text(x = 160, y = 1.8, label= "H1.M1")+
+  geom_text(x=100, y=2.35, label= "H1.M2")
+
+graph1 + ggtitle("                                Graph 1- Climate Policy and Risk") + ylab("climate policy coverage, 2020 ") + xlab("climate risk, 2018")
+```
+
+```{r}
+library(texreg)
+screenreg(list(m1.risk, m2.risk))
+```
+
+```{r}
+summary(m1.risk)
+```
+```{r}
+summary(m2.risk)
+```
+
+```{r}
+## Policy and salience
+
+## Simple linear regression model
+
+m1.sal <- lm(policy ~ cc.salience, data=cpd)
+
+## Multiple linear regression model
+
+m2.sal <- lm(policy ~ cc.salience + hdi + ghg + gdp, data=cpd)
+
+## Graph
+
+#orange
+m1.sal.eq <- function(x){
+  coef(m1.sal)[2]*x + coef(m1.sal)[1]
+}
+
+#blue
+
+m2.sal.eq <- function(x){
+  coef(m2.sal)[2]*x + coef(m2.sal)[1] + coef(m2.sal)[3] + coef(m2.sal)[4] + coef(m2.sal)[5]
+}
+
+graph2 <- ggplot(cpd, aes(y=policy,x=cc.salience)) +
+  geom_point() +
+  stat_function(fun=m1.sal.eq,geom="line",color=scales::hue_pal()(2)[1])+
+  stat_function(fun=m2.sal.eq,geom="line",color=scales::hue_pal()(2)[2])+
+    geom_text(x = 70, y = 3.3, label= "H2a.M1")+
+  geom_text(x=65, y=3.5, label= "H2a.M2")
+
+graph2 + ggtitle("                                Graph 2- Climate Policy and Salience") + ylab("climate policy coverage, 2020 ") + xlab("% salience of climate change, 2020")
+```
+```{r}
+screenreg(list(m1.sal, m2.sal))
+```
+
+```{r}
+summary(m1.sal)
+```
+
+```{r}
+summary(m2.sal)
+```
+
+
+```{r}
+## Policy and opinion
+
+## Simple linear regression model
+
+m1.op <- lm(policy ~ cc.opinion, data=cpd)
+
+## Multiple linear regression model
+
+m2.op <- lm(policy ~ cc.opinion + hdi + ghg + gdp, data=cpd)
+
+## Graph
+
+#orange
+m1.op.eq <- function(x){
+  coef(m1.op)[2]*x + coef(m1.op)[1]
+}
+
+#blue
+m2.op.eq <- function(x){
+  coef(m2.op)[2]*x + coef(m2.op)[1] + coef(m2.op)[3] + coef(m2.op)[4] + coef(m2.op)[5]
+}
+
+graph3 <- ggplot(cpd,aes(y=policy,x=cc.opinion))+geom_point()+
+        stat_function(fun=m1.op.eq,geom="line",color=scales::hue_pal()(2)[1]) +
+    stat_function(fun=m2.op.eq,geom="line",color=scales::hue_pal()(2)[2])+
+  geom_text(x = 68, y = 3.35, label= "H2b.M1")+
+  geom_text(x=75, y=4.2, label= "H2b.M2")
+
+graph3 + ggtitle("                                Graph 3- Climate Policy and Opinion") + ylab("climate policy coverage, 2020 ") + xlab("% of people who say we should do Everything Necessary in response to climate change, 2020")
+```
+
+```{r}
+screenreg(list(m1.op, m2.op))
+```
+
+```{r}
+summary(m1.op)
+```
+
+```{r}
+summary(m2.op)
+```
+
+```{r}
+mean(cpd$risk, na.rm=T)
+```
+
+
+```{r}
+mean.risk.very.high.dev <- mean(cpd$risk[cpd$hdi>=0.8], na.rm=T)
+mean.risk.very.high.dev
+```
+
+```{r}
+mean.risk.high.dev <- mean(cpd$risk [cpd$hdi >= 0.70 & cpd$hdi <= 0.79], na.rm=T)
+mean.risk.high.dev
+```
+
+```{r}
+mean.risk.medium.dev <- mean(cpd$risk [cpd$hdi >= 0.55 & cpd$hdi <= 0.70], na.rm=T)
+mean.risk.medium.dev
+```
+
+```{r}
+mean.risk.low.dev <- mean(cpd$risk [cpd$hdi <= 0.55], na.rm=T)
+mean.risk.low.dev
+```
+
+```{r}
+mean.policy <- mean(cpd$policy, na.rm=T)
+mean.policy
+```
+
+```{r}
+mean.policy.very.high.dev <- mean(cpd$policy[cpd$hdi>=0.8], na.rm=T)
+mean.policy.very.high.dev
+```
+
+```{r}
+mean.policy.low.dev <- mean(cpd$policy[cpd$hdi <= 0.55], na.rm=T)
+mean.policy.low.dev
+```
